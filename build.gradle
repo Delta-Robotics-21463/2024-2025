@@ -30,15 +30,15 @@ spotless {
         target fileTree('.') {
             include '**/*.java'
         }
-        importOrder()
+//        importOrder()
         //        removeUnusedImports()
 
         // Cleanthat will refactor your code, but it may break your style: apply it before your formatter
         cleanthat()          // has its own section below
 
         // Choose one of these formatters.
-        googleJavaFormat()   // has its own section below
-
+//        googleJavaFormat()   // has its own section below
+        eclipse()
         formatAnnotations()  // fixes formatting of type annotations, see below
 
         licenseHeader '/* (C) 2024 */' // or licenseHeaderFile
