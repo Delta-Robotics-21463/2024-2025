@@ -1,0 +1,5 @@
+<lint>
+    <issue id="SuspiciousIndentation">
+        <option name="always-run" value="false" />
+    </issue>
+</lint>
