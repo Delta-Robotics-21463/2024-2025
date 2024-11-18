@@ -6,21 +6,21 @@ import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Elevator;
 
 @TeleOp
-public class Main extends OpMode {
+public class Bob extends OpMode {
 
 	private MecanumDrive drive;
 	private GamepadEx driverOp;
@@ -29,6 +29,9 @@ public class Main extends OpMode {
 
 	private Arm arm;
 	private Elevator elevator;
+
+	private Servo pivot;
+	private CRServo intake;
 
 	private Button aButton;
 	private Button bButton;
@@ -43,6 +46,9 @@ public class Main extends OpMode {
 				new Motor(hardwareMap, "backRight", Motor.GoBILDA.RPM_435));
 
 		this.imu = hardwareMap.get(IMU.class, "imu");
+
+		this.intake = hardwareMap.crservo.get("intake");
+		this.pivot = hardwareMap.servo.get("pivot");
 		// Adjust the orientation parameters to match your robot
 		IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
 				RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
@@ -55,9 +61,13 @@ public class Main extends OpMode {
 		bButton = new GamepadButton(driverOp, GamepadKeys.Button.B);
 
 		this.elevator = new Elevator(hardwareMap, "elevator");
-		this.arm = new Arm(hardwareMap, "arm");
+		this.arm = new Arm(hardwareMap, "arm", telemetry);
 
 		CommandScheduler.getInstance().enable();
+
+		aButton.whenPressed(elevator.setPositionCmd(5));
+		bButton.whenPressed(arm.setPositionCmd(1));
+		System.out.println("HELLOOOOO");
 	}
 
 	@Override
@@ -68,8 +78,13 @@ public class Main extends OpMode {
 																			// degrees
 				false);
 
-		aButton.whenPressed(elevator.setPositionCmd(5));
-		bButton.whenPressed(arm.setPositionCmd(5));
+		if (driverOp.isDown(GamepadKeys.Button.X)) {
+			pivot.setPosition(10);
+		}
+		if (driverOp.isDown(GamepadKeys.Button.Y)) {
+			intake.setPower(1);
+		}
+		telemetry.update();
 
 		CommandScheduler.getInstance().run();
 	}
