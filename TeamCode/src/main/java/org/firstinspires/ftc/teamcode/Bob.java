@@ -36,6 +36,10 @@ public class Bob extends OpMode {
 	private Button aButton;
 	private Button bButton;
 
+	private Button xButton;
+
+	private Button yButton;
+
 	@Override
 	public void init() {
 		/* instantiate motors */
@@ -59,14 +63,18 @@ public class Bob extends OpMode {
 
 		aButton = new GamepadButton(driverOp, GamepadKeys.Button.A);
 		bButton = new GamepadButton(driverOp, GamepadKeys.Button.B);
+		xButton = new GamepadButton(driverOp, GamepadKeys.Button.X);
+		yButton = new GamepadButton(driverOp, GamepadKeys.Button.Y);
 
-		this.elevator = new Elevator(hardwareMap, "elevator");
+		this.elevator = new Elevator(hardwareMap, "elevator", telemetry);
 		this.arm = new Arm(hardwareMap, "arm", telemetry);
 
 		CommandScheduler.getInstance().enable();
 
-		aButton.whenPressed(elevator.setPositionCmd(5));
-		bButton.whenPressed(arm.setPositionCmd(1));
+		aButton.whenPressed(elevator.setPositionCmd(-2000));
+		bButton.whenPressed(arm.setPositionCmd(-975));
+		xButton.whenPressed(arm.setPositionCmd(0));
+		yButton.whenPressed(arm.setPositionCmd(-2000));
 		System.out.println("HELLOOOOO");
 	}
 

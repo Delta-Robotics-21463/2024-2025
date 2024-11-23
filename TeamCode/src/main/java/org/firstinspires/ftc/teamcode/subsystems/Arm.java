@@ -18,9 +18,12 @@ public class Arm extends SubsystemBase {
 	private Telemetry telemetry;
 	public Arm(HardwareMap hwmap, String name, Telemetry telemetry) {
 		this.arm = new Motor(hwmap, name, Motor.GoBILDA.RPM_312);
+		this.arm.setFeedforwardCoefficients(0.01, 0.025);
+		this.arm.setPositionCoefficient(.025);
+		this.arm.setPositionTolerance(30);
 		this.arm.setRunMode(Motor.RunMode.PositionControl);
 		this.telemetry = telemetry;
-		arm.setPositionCoefficient(1);
+		arm.setInverted(true);
 	}
 
 	private void setPosition(int position) {
