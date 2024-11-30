@@ -21,12 +21,12 @@ public class Arm extends SubsystemBase {
 		this.arm1 = new Motor(hwmap, name1, Motor.GoBILDA.RPM_312);
 		this.arm1.stopAndResetEncoder();
 		this.arm1.setFeedforwardCoefficients(0.01, 0.025);
-		this.arm1.setPositionCoefficient(.025);
+		this.arm1.setPositionCoefficient(.01);
 		this.arm1.setPositionTolerance(30);
 //		this.arm1.setRunMode(Motor.RunMode.PositionControl);
 		this.arm2 = new Motor(hwmap, name2, Motor.GoBILDA.RPM_312);
-		this.arm2.setFeedforwardCoefficients(0.01, 0.025);
-		this.arm2.setPositionCoefficient(.025);
+//		this.arm2.setFeedforwardCoefficients(0.01, 0.025);
+		this.arm2.setPositionCoefficient(.0025);
 		this.arm2.setPositionTolerance(30);
 		this.arm2.stopAndResetEncoder();
 		this.arm2.setRunMode(Motor.RunMode.PositionControl);
