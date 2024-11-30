@@ -23,9 +23,9 @@ public class Arm extends SubsystemBase {
 		this.arm1.setFeedforwardCoefficients(0.01, 0.025);
 		this.arm1.setPositionCoefficient(.01);
 		this.arm1.setPositionTolerance(30);
-//		this.arm1.setRunMode(Motor.RunMode.PositionControl);
+		// this.arm1.setRunMode(Motor.RunMode.PositionControl);
 		this.arm2 = new Motor(hwmap, name2, Motor.GoBILDA.RPM_312);
-//		this.arm2.setFeedforwardCoefficients(0.01, 0.025);
+		// this.arm2.setFeedforwardCoefficients(0.01, 0.025);
 		this.arm2.setPositionCoefficient(.0025);
 		this.arm2.setPositionTolerance(30);
 		this.arm2.stopAndResetEncoder();
@@ -49,7 +49,7 @@ public class Arm extends SubsystemBase {
 	public void periodic() {
 		telemetry.addData("Arm 1 position", arm1.getCurrentPosition());
 		telemetry.addData("Arm 2 position", arm2.getCurrentPosition());
-//		arm1.set(1);
+		// arm1.set(1);
 		arm2.set(1);
 	}
 

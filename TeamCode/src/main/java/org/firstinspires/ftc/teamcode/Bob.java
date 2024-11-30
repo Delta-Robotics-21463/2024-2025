@@ -45,14 +45,10 @@ public class Bob extends OpMode {
 		/* instantiate motors */
 		Motor frontLeft = new Motor(hardwareMap, "frontLeft", Motor.GoBILDA.RPM_312);
 		Motor frontRight = new Motor(hardwareMap, "frontRight", Motor.GoBILDA.RPM_312);
-//		frontRight.setInverted(true);
+		// frontRight.setInverted(true);
 		Motor backLeft = new Motor(hardwareMap, "backLeft", Motor.GoBILDA.RPM_312);
 		Motor backRight = new Motor(hardwareMap, "backRight", Motor.GoBILDA.RPM_312);
-		this.drive = new MecanumDrive(frontLeft,
-				frontRight,
-				backLeft,
-				backRight
-				);
+		this.drive = new MecanumDrive(frontLeft, frontRight, backLeft, backRight);
 
 		this.imu = hardwareMap.get(IMU.class, "imu");
 
@@ -72,13 +68,13 @@ public class Bob extends OpMode {
 		yButton = new GamepadButton(driverOp, GamepadKeys.Button.Y);
 
 		this.elevator = new Elevator(hardwareMap, "elevator", telemetry);
-		this.arm = new Arm(hardwareMap, "arm1","arm2", telemetry);
+		this.arm = new Arm(hardwareMap, "arm1", "arm2", telemetry);
 
 		CommandScheduler.getInstance().enable();
 
 		aButton.whenPressed(elevator.setPositionCmd(-2000));
 		bButton.whenPressed(arm.setPositionCmd(-200, -1031));
-		xButton.whenPressed(arm.setPositionCmd(0,-100));
+		xButton.whenPressed(arm.setPositionCmd(0, -100));
 		yButton.whenPressed(elevator.setPositionCmd(0));
 		System.out.println("HELLOOOOO");
 	}
@@ -86,10 +82,12 @@ public class Bob extends OpMode {
 	@Override
 	public void loop() {
 
-//		drive.driveFieldCentric(driverOp.getLeftX(), driverOp.getLeftY(), driverOp.getRightX(),
-//				imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES), // gyro value passed in here must be in
-//																			// degrees
-//				false);
+		// drive.driveFieldCentric(driverOp.getLeftX(), driverOp.getLeftY(),
+		// driverOp.getRightX(),
+		// imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES), // gyro value
+		// passed in here must be in
+		// // degrees
+		// false);
 		drive.driveRobotCentric(driverOp.getLeftX(), driverOp.getLeftY(), driverOp.getRightX());
 
 		if (driverOp.isDown(GamepadKeys.Button.DPAD_DOWN)) {
