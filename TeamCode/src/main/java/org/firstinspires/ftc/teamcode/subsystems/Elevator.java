@@ -21,6 +21,7 @@ public class Elevator extends SubsystemBase {
 		this.elevator.setFeedforwardCoefficients(0.01, 0.025);
 		this.elevator.setPositionCoefficient(.025);
 		this.elevator.setPositionTolerance(30);
+		this.elevator.stopAndResetEncoder();
 		this.elevator.setRunMode(Motor.RunMode.PositionControl);
 		this.telemetry = telemetry;
 		elevator.setInverted(true);

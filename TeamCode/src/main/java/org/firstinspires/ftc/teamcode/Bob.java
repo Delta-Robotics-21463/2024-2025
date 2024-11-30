@@ -31,7 +31,7 @@ public class Bob extends OpMode {
 	private Elevator elevator;
 
 	private Servo pivot;
-	private CRServo intake;
+	private Servo intake;
 
 	private Button aButton;
 	private Button bButton;
@@ -51,7 +51,7 @@ public class Bob extends OpMode {
 
 		this.imu = hardwareMap.get(IMU.class, "imu");
 
-		this.intake = hardwareMap.crservo.get("intake");
+		this.intake = hardwareMap.servo.get("claw");
 		this.pivot = hardwareMap.servo.get("pivot");
 		// Adjust the orientation parameters to match your robot
 		IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -67,14 +67,14 @@ public class Bob extends OpMode {
 		yButton = new GamepadButton(driverOp, GamepadKeys.Button.Y);
 
 		this.elevator = new Elevator(hardwareMap, "elevator", telemetry);
-		this.arm = new Arm(hardwareMap, "arm", telemetry);
+		this.arm = new Arm(hardwareMap, "arm1","arm2", telemetry);
 
 		CommandScheduler.getInstance().enable();
 
 		aButton.whenPressed(elevator.setPositionCmd(-2000));
-		bButton.whenPressed(arm.setPositionCmd(-975));
-		xButton.whenPressed(arm.setPositionCmd(0));
-		yButton.whenPressed(arm.setPositionCmd(-2000));
+		bButton.whenPressed(arm.setPositionCmd(-200, -1031));
+		xButton.whenPressed(arm.setPositionCmd(0,0));
+		yButton.whenPressed(elevator.setPositionCmd(0));
 		System.out.println("HELLOOOOO");
 	}
 
@@ -86,11 +86,11 @@ public class Bob extends OpMode {
 																			// degrees
 				false);
 
-		if (driverOp.isDown(GamepadKeys.Button.X)) {
-			pivot.setPosition(10);
+		if (driverOp.isDown(GamepadKeys.Button.DPAD_DOWN)) {
+			pivot.setPosition(0);
 		}
-		if (driverOp.isDown(GamepadKeys.Button.Y)) {
-			intake.setPower(1);
+		if (driverOp.isDown(GamepadKeys.Button.DPAD_UP)) {
+			intake.setPosition(120);
 		}
 		telemetry.update();
 
