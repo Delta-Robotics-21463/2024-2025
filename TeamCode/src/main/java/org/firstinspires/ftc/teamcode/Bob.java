@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
+import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -40,6 +41,9 @@ public class Bob extends OpMode {
 
 	private Button yButton;
 
+	private Button rightBumper;
+	private Button leftBumper;
+
 	@Override
 	public void init() {
 		/* instantiate motors */
@@ -66,15 +70,19 @@ public class Bob extends OpMode {
 		bButton = new GamepadButton(driverOp, GamepadKeys.Button.B);
 		xButton = new GamepadButton(driverOp, GamepadKeys.Button.X);
 		yButton = new GamepadButton(driverOp, GamepadKeys.Button.Y);
+		rightBumper = new GamepadButton(driverOp, GamepadKeys.Button.RIGHT_BUMPER);
+		leftBumper = new GamepadButton(driverOp, GamepadKeys.Button.LEFT_BUMPER);
 
 		this.elevator = new Elevator(hardwareMap, "elevator", telemetry);
 		this.arm = new Arm(hardwareMap, "arm1", "arm2", telemetry);
 
 		CommandScheduler.getInstance().enable();
 
-		aButton.whenPressed(elevator.setPositionCmd(-2000));
-		bButton.whenPressed(arm.setPositionCmd(-200, -1031));
-		xButton.whenPressed(arm.setPositionCmd(0, -100));
+		aButton.whenPressed(elevator.setPositionCmd(-2100));
+//		rightBumper.whenPressed(arm.increasePosition(50));
+//		leftBumper.whenPressed(elevator.increasePos(50));
+		bButton.whenPressed(arm.setPositionCmd(215, -1031));
+		xButton.whenPressed(arm.setPositionCmd(13, -57));
 		yButton.whenPressed(elevator.setPositionCmd(0));
 		System.out.println("HELLOOOOO");
 	}
@@ -90,6 +98,20 @@ public class Bob extends OpMode {
 		// false);
 		drive.driveRobotCentric(driverOp.getLeftX(), driverOp.getLeftY(), driverOp.getRightX());
 
+
+
+		if (driverOp.isDown(GamepadKeys.Button.RIGHT_BUMPER)) {
+			arm.increasePosition(5).schedule();
+		}
+		if (driverOp.isDown(GamepadKeys.Button.LEFT_BUMPER)) {
+			arm.increasePosition(-5).schedule();
+		}
+		if(driverOp.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) >0) {
+			elevator.increasePos(5).schedule();
+		}
+		if(driverOp.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) >0) {
+			elevator.increasePos(-5).schedule();
+		}
 		if (driverOp.isDown(GamepadKeys.Button.DPAD_DOWN)) {
 			intake.setPosition(0);
 		}
@@ -97,10 +119,10 @@ public class Bob extends OpMode {
 			intake.setPosition(1);
 		}
 		if (driverOp.isDown(GamepadKeys.Button.DPAD_LEFT)) {
-			pivot.setPosition(0.35);
+			pivot.setPosition(0.5);
 		}
 		if (driverOp.isDown(GamepadKeys.Button.DPAD_RIGHT)) {
-			pivot.setPosition(0.1);
+			pivot.setPosition(0.2);
 		}
 
 		CommandScheduler.getInstance().run();
