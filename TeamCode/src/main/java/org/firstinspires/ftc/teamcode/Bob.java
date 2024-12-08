@@ -32,7 +32,7 @@ public class Bob extends OpMode {
 	private Elevator elevator;
 
 	private Servo pivot;
-	private Servo intake;
+	private CRServo intake;
 
 	private Button aButton;
 	private Button bButton;
@@ -49,14 +49,14 @@ public class Bob extends OpMode {
 		/* instantiate motors */
 		Motor frontLeft = new Motor(hardwareMap, "frontLeft", Motor.GoBILDA.RPM_312);
 		Motor frontRight = new Motor(hardwareMap, "frontRight", Motor.GoBILDA.RPM_312);
-		// frontRight.setInverted(true);
+		 frontLeft.setInverted(true);
 		Motor backLeft = new Motor(hardwareMap, "backLeft", Motor.GoBILDA.RPM_312);
 		Motor backRight = new Motor(hardwareMap, "backRight", Motor.GoBILDA.RPM_312);
 		this.drive = new MecanumDrive(frontLeft, frontRight, backLeft, backRight);
 
 		this.imu = hardwareMap.get(IMU.class, "imu");
 
-		this.intake = hardwareMap.servo.get("claw");
+		this.intake = hardwareMap.crservo.get("claw");
 		this.pivot = hardwareMap.servo.get("pivot");
 		// Adjust the orientation parameters to match your robot
 		IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -79,12 +79,13 @@ public class Bob extends OpMode {
 		CommandScheduler.getInstance().enable();
 
 		aButton.whenPressed(elevator.setPositionCmd(-2100));
-//		rightBumper.whenPressed(arm.increasePosition(50));
-//		leftBumper.whenPressed(elevator.increasePos(50));
-		bButton.whenPressed(arm.setPositionCmd(215, -1031));
+		rightBumper.whenPressed(arm.increasePosition(50));
+		leftBumper.whenPressed(arm.increasePosition(-50));
+		bButton.whenPressed(arm.setPositionCmd(215, -750));
 		xButton.whenPressed(arm.setPositionCmd(13, -57));
 		yButton.whenPressed(elevator.setPositionCmd(0));
 		System.out.println("HELLOOOOO");
+		
 	}
 
 	@Override
@@ -113,21 +114,24 @@ public class Bob extends OpMode {
 			elevator.increasePos(-5).schedule();
 		}
 		if (driverOp.isDown(GamepadKeys.Button.DPAD_DOWN)) {
-			intake.setPosition(0);
+			intake.setPower(-1);
 		}
 		if (driverOp.isDown(GamepadKeys.Button.DPAD_UP)) {
-			intake.setPosition(1);
+			intake.setPower(1);
+		}
+		if (driverOp.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON)) {
+			intake.setPower(0);
 		}
 		if (driverOp.isDown(GamepadKeys.Button.DPAD_LEFT)) {
 			pivot.setPosition(0.5);
 		}
 		if (driverOp.isDown(GamepadKeys.Button.DPAD_RIGHT)) {
-			pivot.setPosition(0.2);
+			pivot.setPosition(1);
 		}
 
 		CommandScheduler.getInstance().run();
 		telemetry.addData("Pivot", pivot.getPosition());
-		telemetry.addData("Intake", intake.getPosition());
+		telemetry.addData("Intake", intake.getPortNumber());
 		telemetry.update();
 	}
 
