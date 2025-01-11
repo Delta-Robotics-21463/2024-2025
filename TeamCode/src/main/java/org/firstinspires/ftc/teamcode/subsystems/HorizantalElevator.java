@@ -8,16 +8,15 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.internal.opmode.InstantRunHelper;
 
-public class Elevator extends SubsystemBase {
+public class HorizantalElevator extends SubsystemBase {
 
 	private final Motor elevator;
 
 	private int reqPosition = 0;
 
 	private Telemetry telemetry;
-	public Elevator(HardwareMap hwmap, String name, Telemetry telemetry) {
+	public HorizantalElevator(HardwareMap hwmap, String name, Telemetry telemetry) {
 		this.elevator = new Motor(hwmap, name, Motor.GoBILDA.RPM_312);
 //		this.elevator.setFeedforwardCoefficients(0.01, 0.025);
 		this.elevator.setPositionCoefficient(.025);

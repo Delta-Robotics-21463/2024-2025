@@ -2,9 +2,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
-import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -16,9 +16,8 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.subsystems.Arm;
-import org.firstinspires.ftc.teamcode.subsystems.Elevator;
+import org.firstinspires.ftc.teamcode.subsystems.HorizantalElevator;
+import org.firstinspires.ftc.teamcode.subsystems.VerticalElevator;
 
 @TeleOp
 public class Bob extends OpMode {
@@ -28,11 +27,18 @@ public class Bob extends OpMode {
 
 	private IMU imu;
 
-	private Arm arm;
-	private Elevator elevator;
+	private HorizantalElevator horizantalElevator;
 
-	private Servo pivot;
-	private CRServo intake;
+	private VerticalElevator verticalElevator;
+
+	private Servo horizantalPivot;
+	private Servo intakeClaw;
+
+	private Servo horizantalTwist;
+
+	private Servo outtakeClaw;
+
+	private Servo verticalPivot;
 
 	private Button aButton;
 	private Button bButton;
@@ -56,8 +62,11 @@ public class Bob extends OpMode {
 
 		this.imu = hardwareMap.get(IMU.class, "imu");
 
-		this.intake = hardwareMap.crservo.get("claw");
-		this.pivot = hardwareMap.servo.get("pivot");
+		this.intakeClaw = hardwareMap.servo.get("intakeClaw");
+		this.horizantalPivot = hardwareMap.servo.get("horizantalPivot");
+		this.horizantalTwist = hardwareMap.servo.get("horizantalTwist");
+		this.outtakeClaw = hardwareMap.servo.get("outtakeClaw");
+		this.verticalPivot = hardwareMap.servo.get("verticalPivot");
 		// Adjust the orientation parameters to match your robot
 		IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
 				RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
@@ -73,17 +82,14 @@ public class Bob extends OpMode {
 		rightBumper = new GamepadButton(driverOp, GamepadKeys.Button.RIGHT_BUMPER);
 		leftBumper = new GamepadButton(driverOp, GamepadKeys.Button.LEFT_BUMPER);
 
-		this.elevator = new Elevator(hardwareMap, "elevator", telemetry);
-		this.arm = new Arm(hardwareMap, "arm1", "arm2", telemetry);
+		this.horizantalElevator = new HorizantalElevator(hardwareMap, "elevator", telemetry);
 
 		CommandScheduler.getInstance().enable();
 
-		aButton.whenPressed(elevator.setPositionCmd(-2100));
-		rightBumper.whenPressed(arm.increasePosition(50));
-		leftBumper.whenPressed(arm.increasePosition(-50));
-		bButton.whenPressed(arm.setPositionCmd(215, -750));
-		xButton.whenPressed(arm.setPositionCmd(13, -57));
-		yButton.whenPressed(elevator.setPositionCmd(0));
+		aButton.whenPressed(verticalElevator.setPositionCmd(-1000, -1000).alongWith(new InstantCommand(()->verticalPivot.setPosition(0.4))));
+		yButton.whenPressed(verticalElevator.setPositionCmd(0, 0).alongWith(new InstantCommand(()->verticalPivot.setPosition(1))));
+		rightBumper.whenPressed(horizantalElevator.increasePos(20));
+		leftBumper.whenPressed(horizantalElevator.increasePos(-20));
 		System.out.println("HELLOOOOO");
 		
 	}
@@ -101,37 +107,14 @@ public class Bob extends OpMode {
 
 
 
-		if (driverOp.isDown(GamepadKeys.Button.RIGHT_BUMPER)) {
-			arm.increasePosition(5).schedule();
-		}
-		if (driverOp.isDown(GamepadKeys.Button.LEFT_BUMPER)) {
-			arm.increasePosition(-5).schedule();
-		}
-		if(driverOp.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) >0) {
-			elevator.increasePos(5).schedule();
-		}
-		if(driverOp.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) >0) {
-			elevator.increasePos(-5).schedule();
-		}
-		if (driverOp.isDown(GamepadKeys.Button.DPAD_DOWN)) {
-			intake.setPower(-1);
-		}
-		if (driverOp.isDown(GamepadKeys.Button.DPAD_UP)) {
-			intake.setPower(1);
-		}
-		if (driverOp.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON)) {
-			intake.setPower(0);
-		}
-		if (driverOp.isDown(GamepadKeys.Button.DPAD_LEFT)) {
-			pivot.setPosition(0.5);
-		}
-		if (driverOp.isDown(GamepadKeys.Button.DPAD_RIGHT)) {
-			pivot.setPosition(1);
-		}
+
 
 		CommandScheduler.getInstance().run();
-		telemetry.addData("Pivot", pivot.getPosition());
-		telemetry.addData("Intake", intake.getPortNumber());
+		telemetry.addData("Pivot", horizantalPivot.getPosition());
+		telemetry.addData("IntakeClaw", intakeClaw.getPosition());
+		telemetry.addData("Twist", horizantalTwist.getPosition());
+		telemetry.addData("OuttakeClaw", outtakeClaw.getPosition());
+		telemetry.addData("VerticalPivot", verticalPivot.getPosition());
 		telemetry.update();
 	}
 
