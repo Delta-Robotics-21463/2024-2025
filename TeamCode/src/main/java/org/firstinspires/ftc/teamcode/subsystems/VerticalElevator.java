@@ -18,7 +18,7 @@ public class VerticalElevator extends SubsystemBase {
     private int rightReqPosition = 0;
 
     private Telemetry telemetry;
-    public VerticalElevator(HardwareMap hwmap, String name, Telemetry telemetry) {
+    public VerticalElevator(HardwareMap hwmap, String name, String name2, Telemetry telemetry) {
         this.leftElevator = new Motor(hwmap, name, Motor.GoBILDA.RPM_312);
 //		this.elevator.setFeedforwardCoefficients(0.01, 0.025);
         this.leftElevator.setPositionCoefficient(.025);
@@ -29,7 +29,7 @@ public class VerticalElevator extends SubsystemBase {
         leftElevator.setInverted(true);
 
 
-        this.rightElevator = new Motor(hwmap, name, Motor.GoBILDA.RPM_312);
+        this.rightElevator = new Motor(hwmap, name2, Motor.GoBILDA.RPM_312);
 //		this.elevator.setFeedforwardCoefficients(0.01, 0.025);
         this.rightElevator.setPositionCoefficient(.025);
         this.rightElevator.setPositionTolerance(30);
@@ -62,8 +62,8 @@ public class VerticalElevator extends SubsystemBase {
     public void periodic() {
         telemetry.addData("Left Elevator position", leftElevator.getCurrentPosition());
         telemetry.addData("Left Req pos", leftReqPosition);
-        leftElevator.set(1);
-        rightElevator.set(1);
+//        leftElevator.set(1);
+//        rightElevator.set(1);
         telemetry.addData("Right Elevator position", rightElevator.getCurrentPosition());
         telemetry.addData("Right Req pos", rightReqPosition);
     }

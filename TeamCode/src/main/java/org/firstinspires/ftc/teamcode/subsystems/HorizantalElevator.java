@@ -48,7 +48,7 @@ public class HorizantalElevator extends SubsystemBase {
 	public void periodic() {
 		telemetry.addData("Elevator position", elevator.getCurrentPosition());
 		telemetry.addData("Req pos", reqPosition);
-		elevator.set(1);
+//		elevator.set(1);
 	}
 
 }

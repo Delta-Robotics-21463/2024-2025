@@ -53,11 +53,14 @@ public class Bob extends OpMode {
 	@Override
 	public void init() {
 		/* instantiate motors */
-		Motor frontLeft = new Motor(hardwareMap, "frontLeft", Motor.GoBILDA.RPM_312);
-		Motor frontRight = new Motor(hardwareMap, "frontRight", Motor.GoBILDA.RPM_312);
-		 frontLeft.setInverted(true);
-		Motor backLeft = new Motor(hardwareMap, "backLeft", Motor.GoBILDA.RPM_312);
-		Motor backRight = new Motor(hardwareMap, "backRight", Motor.GoBILDA.RPM_312);
+		Motor backLeft = new Motor(hardwareMap, "frontLeft", Motor.GoBILDA.RPM_312);
+		Motor frontLeft = new Motor(hardwareMap, "frontRight", Motor.GoBILDA.RPM_312);
+		Motor backRight = new Motor(hardwareMap, "backLeft", Motor.GoBILDA.RPM_312);
+		Motor frontRight = new Motor(hardwareMap, "backRight", Motor.GoBILDA.RPM_312);
+		backLeft.setInverted(false);
+		frontLeft.setInverted(true);
+		backRight.setInverted(false);
+		frontRight.setInverted(true);
 		this.drive = new MecanumDrive(frontLeft, frontRight, backLeft, backRight);
 
 		this.imu = hardwareMap.get(IMU.class, "imu");
@@ -65,8 +68,8 @@ public class Bob extends OpMode {
 		this.intakeClaw = hardwareMap.servo.get("intakeClaw");
 		this.horizantalPivot = hardwareMap.servo.get("horizantalPivot");
 		this.horizantalTwist = hardwareMap.servo.get("horizantalTwist");
-		this.outtakeClaw = hardwareMap.servo.get("outtakeClaw");
-		this.verticalPivot = hardwareMap.servo.get("verticalPivot");
+//		this.outtakeClaw = hardwareMap.servo.get("outtakeClaw");
+//		this.verticalPivot = hardwareMap.servo.get("verticalPivot");
 		// Adjust the orientation parameters to match your robot
 		IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
 				RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
@@ -82,7 +85,9 @@ public class Bob extends OpMode {
 		rightBumper = new GamepadButton(driverOp, GamepadKeys.Button.RIGHT_BUMPER);
 		leftBumper = new GamepadButton(driverOp, GamepadKeys.Button.LEFT_BUMPER);
 
-		this.horizantalElevator = new HorizantalElevator(hardwareMap, "elevator", telemetry);
+		this.horizantalElevator = new HorizantalElevator(hardwareMap, "horizantalElevator", telemetry);
+		this.verticalElevator = new VerticalElevator(hardwareMap, "elevatorLeft", "elevatorRight", telemetry);
+
 
 		CommandScheduler.getInstance().enable();
 
@@ -113,8 +118,8 @@ public class Bob extends OpMode {
 		telemetry.addData("Pivot", horizantalPivot.getPosition());
 		telemetry.addData("IntakeClaw", intakeClaw.getPosition());
 		telemetry.addData("Twist", horizantalTwist.getPosition());
-		telemetry.addData("OuttakeClaw", outtakeClaw.getPosition());
-		telemetry.addData("VerticalPivot", verticalPivot.getPosition());
+//		telemetry.addData("OuttakeClaw", outtakeClaw.getPosition());
+//		telemetry.addData("VerticalPivot", verticalPivot.getPosition());
 		telemetry.update();
 	}
 
