@@ -21,25 +21,26 @@ public class VerticalElevator extends SubsystemBase {
     public VerticalElevator(HardwareMap hwmap, String name, String name2, Telemetry telemetry) {
         this.leftElevator = new Motor(hwmap, name, Motor.GoBILDA.RPM_312);
 //		this.elevator.setFeedforwardCoefficients(0.01, 0.025);
-        this.leftElevator.setPositionCoefficient(.025);
+        this.leftElevator.setPositionCoefficient(.01);
         this.leftElevator.setPositionTolerance(30);
         this.leftElevator.stopAndResetEncoder();
         this.leftElevator.setRunMode(Motor.RunMode.PositionControl);
         this.telemetry = telemetry;
-        leftElevator.setInverted(true);
+        leftElevator.setInverted(false);
 
 
         this.rightElevator = new Motor(hwmap, name2, Motor.GoBILDA.RPM_312);
 //		this.elevator.setFeedforwardCoefficients(0.01, 0.025);
-        this.rightElevator.setPositionCoefficient(.025);
+        this.rightElevator.setPositionCoefficient(.01);
         this.rightElevator.setPositionTolerance(30);
         this.rightElevator.stopAndResetEncoder();
         this.rightElevator.setRunMode(Motor.RunMode.PositionControl);
-        rightElevator.setInverted(true);
+        rightElevator.setInverted(false);
     }
 
     private void setPosition(int leftPosition, int rightPosition ) {
         leftElevator.setTargetPosition(leftPosition);
+        rightElevator.setTargetPosition(rightPosition);
         leftReqPosition = leftPosition;
         rightReqPosition = rightPosition;
     }
@@ -49,6 +50,10 @@ public class VerticalElevator extends SubsystemBase {
     }
     public int getRightPosition() {
         return rightElevator.getCurrentPosition();
+    }
+    public void resetPos() {
+        this.rightElevator.resetEncoder();
+        this.leftElevator.resetEncoder();
     }
     public Command setPositionCmd(int leftPosition, int rightPosition) {
         return new InstantCommand(() -> this.setPosition(leftPosition, rightPosition), this);
@@ -62,8 +67,8 @@ public class VerticalElevator extends SubsystemBase {
     public void periodic() {
         telemetry.addData("Left Elevator position", leftElevator.getCurrentPosition());
         telemetry.addData("Left Req pos", leftReqPosition);
-//        leftElevator.set(1);
-//        rightElevator.set(1);
+        leftElevator.set(1);
+        rightElevator.set(1);
         telemetry.addData("Right Elevator position", rightElevator.getCurrentPosition());
         telemetry.addData("Right Req pos", rightReqPosition);
     }

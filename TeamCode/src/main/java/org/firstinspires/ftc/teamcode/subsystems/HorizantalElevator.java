@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.RepeatCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -19,12 +20,17 @@ public class HorizantalElevator extends SubsystemBase {
 	public HorizantalElevator(HardwareMap hwmap, String name, Telemetry telemetry) {
 		this.elevator = new Motor(hwmap, name, Motor.GoBILDA.RPM_312);
 //		this.elevator.setFeedforwardCoefficients(0.01, 0.025);
-		this.elevator.setPositionCoefficient(.025);
-		this.elevator.setPositionTolerance(30);
+		this.elevator.setPositionCoefficient(.015);
+		this.elevator.setPositionTolerance(50);
 		this.elevator.stopAndResetEncoder();
 		this.elevator.setRunMode(Motor.RunMode.PositionControl);
 		this.telemetry = telemetry;
 		elevator.setInverted(true);
+	}
+
+
+	public void resetPos() {
+		this.elevator.resetEncoder();
 	}
 
 	private void setPosition(int position) {
@@ -41,14 +47,14 @@ public class HorizantalElevator extends SubsystemBase {
 	}
 
 	public Command increasePos(int amt) {
-		return new InstantCommand(()->this.setPosition(reqPosition-amt), this);
+		return new RepeatCommand(new InstantCommand(()->this.setPosition(reqPosition-amt), this));
 	}
 
 	@Override
 	public void periodic() {
 		telemetry.addData("Elevator position", elevator.getCurrentPosition());
 		telemetry.addData("Req pos", reqPosition);
-//		elevator.set(1);
+		elevator.set(1);
 	}
 
 }

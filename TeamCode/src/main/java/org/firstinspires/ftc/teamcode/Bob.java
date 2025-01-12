@@ -25,6 +25,8 @@ public class Bob extends OpMode {
 	private MecanumDrive drive;
 	private GamepadEx driverOp;
 
+	private GamepadEx operatorOp;
+
 	private IMU imu;
 
 	private HorizantalElevator horizantalElevator;
@@ -47,6 +49,8 @@ public class Bob extends OpMode {
 
 	private Button yButton;
 
+	private Button bButtonOp;
+
 	private Button rightBumper;
 	private Button leftBumper;
 
@@ -68,8 +72,8 @@ public class Bob extends OpMode {
 		this.intakeClaw = hardwareMap.servo.get("intakeClaw");
 		this.horizantalPivot = hardwareMap.servo.get("horizantalPivot");
 		this.horizantalTwist = hardwareMap.servo.get("horizantalTwist");
-//		this.outtakeClaw = hardwareMap.servo.get("outtakeClaw");
-//		this.verticalPivot = hardwareMap.servo.get("verticalPivot");
+		this.outtakeClaw = hardwareMap.servo.get("outtakeClaw");
+		this.verticalPivot = hardwareMap.servo.get("verticalPivot");
 		// Adjust the orientation parameters to match your robot
 		IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
 				RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
@@ -77,11 +81,13 @@ public class Bob extends OpMode {
 		// forward
 		imu.initialize(parameters);
 		driverOp = new GamepadEx(gamepad1);
+		operatorOp = new GamepadEx(gamepad2);
 
 		aButton = new GamepadButton(driverOp, GamepadKeys.Button.A);
 		bButton = new GamepadButton(driverOp, GamepadKeys.Button.B);
 		xButton = new GamepadButton(driverOp, GamepadKeys.Button.X);
 		yButton = new GamepadButton(driverOp, GamepadKeys.Button.Y);
+		bButtonOp = new GamepadButton(operatorOp, GamepadKeys.Button.B);
 		rightBumper = new GamepadButton(driverOp, GamepadKeys.Button.RIGHT_BUMPER);
 		leftBumper = new GamepadButton(driverOp, GamepadKeys.Button.LEFT_BUMPER);
 
@@ -91,10 +97,15 @@ public class Bob extends OpMode {
 
 		CommandScheduler.getInstance().enable();
 
-		aButton.whenPressed(verticalElevator.setPositionCmd(-1000, -1000).alongWith(new InstantCommand(()->verticalPivot.setPosition(0.4))));
-		yButton.whenPressed(verticalElevator.setPositionCmd(0, 0).alongWith(new InstantCommand(()->verticalPivot.setPosition(1))));
-		rightBumper.whenPressed(horizantalElevator.increasePos(20));
-		leftBumper.whenPressed(horizantalElevator.increasePos(-20));
+		aButton.whenPressed(verticalElevator.setPositionCmd(4000, -4000).alongWith(new InstantCommand(()->verticalPivot.setPosition(0))));
+		bButton.whenPressed(verticalElevator.setPositionCmd(0, 0).alongWith(new InstantCommand(()->verticalPivot.setPosition(0.475))));
+		rightBumper.whileHeld(horizantalElevator.increasePos(20));
+		leftBumper.whileHeld(horizantalElevator.increasePos(-20));
+
+		bButtonOp.whenPressed(horizantalElevator.setPositionCmd(0).alongWith(new InstantCommand(()->horizantalPivot.setPosition(0.83)).alongWith(new InstantCommand(()->verticalPivot.setPosition(0.475)))));
+
+		this.verticalElevator.resetPos();
+		this.horizantalElevator.resetPos();
 		System.out.println("HELLOOOOO");
 		
 	}
@@ -109,8 +120,35 @@ public class Bob extends OpMode {
 		// // degrees
 		// false);
 		drive.driveRobotCentric(driverOp.getLeftX(), driverOp.getLeftY(), driverOp.getRightX());
+		if (driverOp.isDown(GamepadKeys.Button.X)) {
+			horizantalPivot.setPosition(0.83);
+		}
+		if (driverOp.isDown(GamepadKeys.Button.Y)) {
+			horizantalPivot.setPosition(0);
+		}
+		if (driverOp.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.5) {
+			horizantalTwist.setPosition(1);
+		}
+		if (driverOp.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.5) {
+			horizantalTwist.setPosition(0.45);
+		}
 
-
+		if (driverOp.isDown(GamepadKeys.Button.DPAD_UP)) {
+			intakeClaw.setPosition(0.75);
+		}
+		if (driverOp.isDown(GamepadKeys.Button.DPAD_DOWN)) {
+			intakeClaw.setPosition(0.35);
+		}
+		if (driverOp.isDown(GamepadKeys.Button.DPAD_RIGHT)) {
+			outtakeClaw.setPosition(0.5);
+		}
+		if (driverOp.isDown(GamepadKeys.Button.DPAD_LEFT)) {
+			outtakeClaw.setPosition(0.8);
+		}
+		if (operatorOp.isDown(GamepadKeys.Button.A)) {
+			outtakeClaw.setPosition(0.8);
+			intakeClaw.setPosition(0.35);
+		}
 
 
 
@@ -118,8 +156,8 @@ public class Bob extends OpMode {
 		telemetry.addData("Pivot", horizantalPivot.getPosition());
 		telemetry.addData("IntakeClaw", intakeClaw.getPosition());
 		telemetry.addData("Twist", horizantalTwist.getPosition());
-//		telemetry.addData("OuttakeClaw", outtakeClaw.getPosition());
-//		telemetry.addData("VerticalPivot", verticalPivot.getPosition());
+		telemetry.addData("OuttakeClaw", outtakeClaw.getPosition());
+		telemetry.addData("VerticalPivot", verticalPivot.getPosition());
 		telemetry.update();
 	}
 
