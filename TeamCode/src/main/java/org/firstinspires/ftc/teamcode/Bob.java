@@ -119,7 +119,7 @@ public class Bob extends OpMode {
 		// passed in here must be in
 		// // degrees
 		// false);
-		drive.driveRobotCentric(driverOp.getLeftX(), driverOp.getLeftY(), driverOp.getRightX());
+		drive.driveRobotCentric(driverOp.getLeftX()*0.75, driverOp.getLeftY()*0.75, driverOp.getRightX()*0.75);
 		if (driverOp.isDown(GamepadKeys.Button.X)) {
 			horizantalPivot.setPosition(0.83);
 		}
