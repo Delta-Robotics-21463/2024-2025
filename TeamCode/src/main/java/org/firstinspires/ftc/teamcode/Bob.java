@@ -98,7 +98,8 @@ public class Bob extends OpMode {
 		CommandScheduler.getInstance().enable();
 
 		aButton.whenPressed(verticalElevator.setPositionCmd(4000, -4000).alongWith(new InstantCommand(()->verticalPivot.setPosition(0))));
-		bButton.whenPressed(verticalElevator.setPositionCmd(0, 0).alongWith(new InstantCommand(()->verticalPivot.setPosition(0.475))));
+		bButton.whenPressed(verticalElevator.setPositionCmd(0, 0).alongWith(new InstantCommand(()->verticalPivot.setPosition(0.31
+		))));
 		rightBumper.whileHeld(horizantalElevator.increasePos(20));
 		leftBumper.whileHeld(horizantalElevator.increasePos(-20));
 
